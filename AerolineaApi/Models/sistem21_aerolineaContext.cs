@@ -50,7 +50,7 @@ namespace AerolineaApi.Models
             {
                 entity.ToTable("vuelo");
 
-                entity.HasIndex(e => e.IdObservacion, "fkVueloObservacion_idx");
+                entity.HasIndex(e => e.Idobservacion, "fkVueloObservacion_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -68,17 +68,17 @@ namespace AerolineaApi.Models
                     .HasColumnType("datetime")
                     .HasColumnName("fecha");
 
-                entity.Property(e => e.IdObservacion)
+                entity.Property(e => e.Idobservacion)
                     .HasColumnType("int(11)")
-                    .HasColumnName("id_observacion");
+                    .HasColumnName("idobservacion");
 
                 entity.Property(e => e.Puerta)
                     .HasColumnType("int(11)")
                     .HasColumnName("puerta");
 
-                entity.HasOne(d => d.IdObservacionNavigation)
+                entity.HasOne(d => d.IdobservacionNavigation)
                     .WithMany(p => p.Vuelo)
-                    .HasForeignKey(d => d.IdObservacion)
+                    .HasForeignKey(d => d.Idobservacion)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fkVueloObservacion");
             });
