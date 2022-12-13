@@ -1,4 +1,5 @@
-﻿using SalidasAerolinea.Models;
+﻿using Newtonsoft.Json;
+using SalidasAerolinea.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,22 @@ namespace SalidasAerolinea.Services
             BaseAddress = new Uri("https://aerolinea.sistemas19.com/api/vuelo")
         };
 
-        public Task<List<Vuelo>>
-        
+        public async Task<List<Vuelo>> Get()
+        {
+            List<Vuelo>? vuelos = new List<Vuelo>();
+            var response = await client.GetAsync("");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                vuelos = JsonConvert.DeserializeObject<List<Vuelo>>(json);
+            }
+
+            if (vuelos == null)
+                return vuelos = new List<Vuelo>();
+            else
+                return vuelos;
+
+        }
+
     }
 }
