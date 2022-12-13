@@ -27,7 +27,7 @@ namespace SalidasAerolinea.Services
             }
 
             if (vuelos == null)
-                return vuelos = new List<Vuelo>();
+                return  new List<Vuelo>();
             else
                 return vuelos;
 
