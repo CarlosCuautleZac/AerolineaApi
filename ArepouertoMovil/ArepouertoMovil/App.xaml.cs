@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArepouertoMovil.Views;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +11,7 @@ namespace ArepouertoMovil
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new AgregarVueloView();
         }
 
         protected override void OnStart()

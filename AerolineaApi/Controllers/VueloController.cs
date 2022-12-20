@@ -137,11 +137,14 @@ namespace AerolineaApi.Controllers
             if (vuelo.Fecha < DateTime.Now)
                 errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
 
-            if (vuelo.Puerta < 1 || vuelo.Puerta > 20)
-                errors.Add("Escriba una puerta entre ");
+            //la puerta puede ser nula
+            //if (vuelo.Puerta < 1 || vuelo.Puerta > 20)
+            //    errors.Add("Escriba una puerta entre la número 1 y la número 20");
 
-            if (repository.Get().Any(x => x.Puerta != vuelo.Puerta && x.Id != vuelo.Id))
-                errors.Add("Ya se esta ocupando esa puerta, escriba otra para e intente de nuevo");
+            //ver como se comporta -- recordatorio
+            if (vuelo.Puerta > 0)
+                if (repository.Get().Any(x => x.Puerta == vuelo.Puerta && x.Id != vuelo.Id))
+                    errors.Add("Ya se esta ocupando esa puerta, escriba otra para e intente de nuevo");
 
 
             return errors.Count == 0;
