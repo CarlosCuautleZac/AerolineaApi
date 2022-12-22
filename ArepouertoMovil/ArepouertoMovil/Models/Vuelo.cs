@@ -10,7 +10,7 @@ namespace ArepouertoMovil.Models
         public string Destino { get; set; }
         public string Aerolinea { get; set; }
         public DateTime Fecha { get; set; }
-        public int Puerta { get; set; }
+        public int? Puerta { get; set; }
         public string Observacion { get; set; }
     }
 }

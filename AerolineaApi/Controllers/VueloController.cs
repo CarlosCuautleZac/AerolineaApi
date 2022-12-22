@@ -25,6 +25,8 @@ namespace AerolineaApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            Limpiar();
+
             var vuelos = repository.Get().Include(x => x.IdobservacionNavigation).Select(x => new VueloDTO
             {
                 Id = x.Id,
@@ -33,14 +35,63 @@ namespace AerolineaApi.Controllers
                 Fecha = x.Fecha,
                 Observacion = x.IdobservacionNavigation.Observacion1,
                 Puerta = x.Puerta
-            }).OrderBy(x => x.Fecha).Where(x => x.Fecha > DateTime.Now);
+            }).OrderBy(x => x.Fecha).ToList();
 
+            
+            
             return Ok(vuelos);
+        }
+
+        private void Limpiar()
+        {
+            DateTime ahora = DateTime.Now;
+
+            //Limpiamos los cancelados
+           var v =  repository.Get().Include(x => x.IdobservacionNavigation).
+                Where(x=>x.IdobservacionNavigation.Observacion1=="Cancelado").ToList();
+
+            if (v.Count>0)
+            {
+                for (int i = 0; i < v.Count(); i++)
+                {
+                    var h = v[i].FechaModificacion;
+                    if (h != null)
+                    {
+                        h = h.Value.AddMinutes(2);
+
+                        if (h < ahora)
+                            repository.Delete(v[i]);
+                    }
+                    
+
+
+                }
+            }
+
+            //cambiamos el estado a los vuelos que estan atrasados
+            var retrasados = repository.Get().Include(x => x.IdobservacionNavigation).
+                Where(x => x.IdobservacionNavigation.Observacion1 != "Cancelado" && x.Fecha<ahora ).ToList();
+            if (retrasados.Count > 0)
+            {
+                for (int i = 0; i < retrasados.Count(); i++)
+                {
+                    var vuelo = retrasados[i];
+                    var vueloencontrado = repository.Get(vuelo.Id);
+                    if (vueloencontrado != null)
+                    {
+                        vueloencontrado.Idobservacion = 3;
+                        repository.Update(vueloencontrado);
+                    }
+                }
+            }
+
         }
 
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
+            
+
             var vuelos = repository.Get().Include(x => x.IdobservacionNavigation).Where(x => x.Id == id).Select(x => new VueloDTO
             {
                 Id = x.Id,
@@ -54,8 +105,13 @@ namespace AerolineaApi.Controllers
             if (vuelos == null)
                 return NotFound("No se encontro el vuelo");
             else
+            {              
                 return Ok(vuelos);
+            }
+                
         }
+
+      
 
         [HttpPost]
         public IActionResult Post(VueloDTO vuelo)
@@ -72,7 +128,8 @@ namespace AerolineaApi.Controllers
                     Fecha = vuelo.Fecha,
                     Idobservacion = repositoryobservacion.Get().Where(x => x.Observacion1 == vuelo.Observacion)
                     .Select(x => x.Id).FirstOrDefault(),
-                    Puerta = vuelo.Puerta
+                    Puerta = vuelo.Puerta,
+                    FechaModificacion = DateTime.Now                  
                 };
 
                 repository.Insert(v);
@@ -103,6 +160,7 @@ namespace AerolineaApi.Controllers
                 v.Idobservacion = repositoryobservacion.Get().Where(x => x.Observacion1 == vuelo.Observacion)
                 .Select(x => x.Id).FirstOrDefault();
                 v.Puerta = vuelo.Puerta;
+                v.FechaModificacion = DateTime.Now;
 
 
                 repository.Update(v);

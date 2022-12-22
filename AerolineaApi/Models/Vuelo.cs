@@ -9,8 +9,9 @@ namespace AerolineaApi.Models
         public string Destino { get; set; } = null!;
         public string Aerolinea { get; set; } = null!;
         public DateTime Fecha { get; set; }
-        public int Puerta { get; set; }
+        public int? Puerta { get; set; }
         public int Idobservacion { get; set; }
+        public DateTime? FechaModificacion { get; set; }
 
         public virtual Observacion IdobservacionNavigation { get; set; } = null!;
     }

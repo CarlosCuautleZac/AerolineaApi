@@ -18,6 +18,7 @@
                     <StackPanel>
                         <Label Content="{Binding  Destino}"></Label>
                         <Label Content="{Binding  Fecha}"></Label>
+                        <Label Content="{Binding Observacion}"></Label>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

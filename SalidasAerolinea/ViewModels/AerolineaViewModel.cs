@@ -37,14 +37,17 @@ namespace SalidasAerolinea.ViewModels
             if (Vuelos == null)
                 Vuelos = new();
 
-            Vuelos.Clear();
+            Vuelos = new ObservableCollection<Vuelo>(await vueloService.Get());
+            //Vuelos.Clear();
 
-           var vuelosentrantes = await vueloService.Get();
+           //var vuelosentrantes = await vueloService.Get();
 
-            foreach (var v in vuelosentrantes)
-            {
-                Vuelos.Add(v);
-            }
+            //foreach (var v in vuelosentrantes)
+            //{
+            //    Vuelos.Add(v);
+            //}
+
+            Actualizar(nameof(Vuelos));
         }
 
         public void Actualizar(string nombre = "")

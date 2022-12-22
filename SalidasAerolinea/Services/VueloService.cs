@@ -13,7 +13,7 @@ namespace SalidasAerolinea.Services
     {
         HttpClient client = new HttpClient()
         {
-            BaseAddress = new Uri("https://aerolinea.sistemas19.com/api/vuelo")
+            BaseAddress = new Uri("https://localhost:7161/api/vuelo")
         };
 
         public async Task<List<Vuelo>> Get()
