@@ -13,7 +13,7 @@ namespace ArepouertoMovil.Services
     {
         HttpClient client = new HttpClient()
         {
-            BaseAddress = new Uri("https://c5ae-2806-108e-26-cf91-d191-d48d-36ea-8b92.ngrok.io/api/vuelo")
+            BaseAddress = new Uri("https://aerolinea.sistemas19.com/api/vuelo")
         };
 
 

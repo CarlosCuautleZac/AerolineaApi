@@ -37,32 +37,33 @@ namespace AerolineaApi.Controllers
                 Puerta = x.Puerta
             }).OrderBy(x => x.Fecha).ToList();
 
-            
-            
+
+
             return Ok(vuelos);
         }
 
         private void Limpiar()
         {
-            DateTime ahora = DateTime.Now;
+            DateTime ahora = DateTime.Now.AddHours(2);
 
             //Limpiamos los cancelados
-           var v =  repository.Get().Include(x => x.IdobservacionNavigation).
-                Where(x=>x.IdobservacionNavigation.Observacion1=="Cancelado").ToList();
+            var v = repository.Get().Include(x => x.IdobservacionNavigation).
+                 Where(x => x.IdobservacionNavigation.Observacion1 == "Cancelado"
+                 || x.IdobservacionNavigation.Observacion1 == "Abordando").ToList();
 
-            if (v.Count>0)
+            if (v.Count > 0)
             {
                 for (int i = 0; i < v.Count(); i++)
                 {
                     var h = v[i].FechaModificacion;
                     if (h != null)
                     {
-                        h = h.Value.AddMinutes(2);
+                        var hourtoeliminate = h.Value.AddMinutes(2).AddHours(2);
 
-                        if (h < ahora)
+                        if (hourtoeliminate < ahora.AddHours(2))
                             repository.Delete(v[i]);
                     }
-                    
+
 
 
                 }
@@ -70,7 +71,9 @@ namespace AerolineaApi.Controllers
 
             //cambiamos el estado a los vuelos que estan atrasados
             var retrasados = repository.Get().Include(x => x.IdobservacionNavigation).
-                Where(x => x.IdobservacionNavigation.Observacion1 != "Cancelado" && x.Fecha<ahora ).ToList();
+                Where(x => x.IdobservacionNavigation.Observacion1 != "Cancelado"
+                &&x.IdobservacionNavigation.Observacion1!= "Abordando"&& x.IdobservacionNavigation.Observacion1 != "Atrasado" &&
+                x.Fecha < ahora).ToList();
             if (retrasados.Count > 0)
             {
                 for (int i = 0; i < retrasados.Count(); i++)
@@ -90,7 +93,7 @@ namespace AerolineaApi.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            
+
 
             var vuelos = repository.Get().Include(x => x.IdobservacionNavigation).Where(x => x.Id == id).Select(x => new VueloDTO
             {
@@ -105,13 +108,13 @@ namespace AerolineaApi.Controllers
             if (vuelos == null)
                 return NotFound("No se encontro el vuelo");
             else
-            {              
+            {
                 return Ok(vuelos);
             }
-                
+
         }
 
-      
+
 
         [HttpPost]
         public IActionResult Post(VueloDTO vuelo)
@@ -129,7 +132,7 @@ namespace AerolineaApi.Controllers
                     Idobservacion = repositoryobservacion.Get().Where(x => x.Observacion1 == vuelo.Observacion)
                     .Select(x => x.Id).FirstOrDefault(),
                     Puerta = vuelo.Puerta,
-                    FechaModificacion = DateTime.Now                  
+                    FechaModificacion = DateTime.Now.AddHours(2)
                 };
 
                 repository.Insert(v);
@@ -153,6 +156,12 @@ namespace AerolineaApi.Controllers
 
             if (Validate(vuelo, out List<string> errores))
             {
+                if (vuelo.Fecha < v.Fecha)
+                {
+                    errores.Add("La fecha a modificar no puede ser menor a la establecida. Escriba una igual o mayor e " +
+                        "intente hacer otra solicitud");
+                    return BadRequest(errores);
+                }
 
                 v.Aerolinea = vuelo.Aerolinea.Trim().ToUpper();
                 v.Destino = vuelo.Destino.Trim().ToUpper();
@@ -160,7 +169,7 @@ namespace AerolineaApi.Controllers
                 v.Idobservacion = repositoryobservacion.Get().Where(x => x.Observacion1 == vuelo.Observacion)
                 .Select(x => x.Id).FirstOrDefault();
                 v.Puerta = vuelo.Puerta;
-                v.FechaModificacion = DateTime.Now;
+                v.FechaModificacion = DateTime.Now.AddHours(2);
 
 
                 repository.Update(v);
@@ -192,9 +201,12 @@ namespace AerolineaApi.Controllers
             if (string.IsNullOrWhiteSpace(vuelo.Aerolinea))
                 errors.Add("Debe ingresar una aerolinea.");
 
-            if (vuelo.Fecha < DateTime.Now)
-                errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
-
+            if (vuelo.Id == 0)
+            {
+                if (vuelo.Fecha < DateTime.Now)
+                    errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
+            }
+              
             //la puerta puede ser nula
             //if (vuelo.Puerta < 1 || vuelo.Puerta > 20)
             //    errors.Add("Escriba una puerta entre la número 1 y la número 20");

@@ -12,5 +12,6 @@ namespace ArepouertoMovil.Models
         public DateTime Fecha { get; set; }
         public int? Puerta { get; set; }
         public string Observacion { get; set; }
+        
     }
 }
