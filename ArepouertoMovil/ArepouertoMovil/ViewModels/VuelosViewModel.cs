@@ -11,15 +11,16 @@ using Xamarin.Forms;
 
 namespace ArepouertoMovil.ViewModels
 {
-    public class VuelosViewModel:INotifyPropertyChanged
+    public class VuelosViewModel : INotifyPropertyChanged
     {
 
-        public Command EnviarVueloCommand { get; set; } 
+        public Command EnviarVueloCommand { get; set; }
 
         public Vuelo Vuelo { get; set; }
         public Observacion Observacion { get; set; }
         public List<Observacion> Observaciones { get; set; }
         public string Error { get; set; } = "";
+        public DateTime Fecha { get; set; } = DateTime.Now;
         public TimeSpan Hora { get; set; }
 
         VueloService vueloService;
@@ -33,8 +34,8 @@ namespace ArepouertoMovil.ViewModels
             vueloService.Error += VueloService_Error;
             observacionService = new ObservacionService();
 
-            Vuelo = new Vuelo() { Fecha = DateTime.Now.Date};
-            
+            Vuelo = new Vuelo() { Fecha = DateTime.Now.Date };
+
             LlenarVuelos();
             LLenarObservaciones();
         }
@@ -45,23 +46,25 @@ namespace ArepouertoMovil.ViewModels
 
             foreach (var e in errores)
             {
-                Error += e+Environment.NewLine;
+                Error += e + Environment.NewLine;
             }
         }
 
         private async void EnviarVuelo()
-        {
+        { 
             //Validar
 
-
-           Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
+             Vuelo.Fecha = Fecha.Date;
+            Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
             Vuelo.Observacion = Observacion.Observacion1;
 
-           var enviado = vueloService.Insert(Vuelo).Result;
 
-            if(enviado)
+
+            var enviado = vueloService.Insert(Vuelo).Result;
+
+            if (enviado)
                 await App.Current.MainPage.DisplayAlert("Alert", "Se ha enviado la info", "OK");
-            
+
 
         }
 
@@ -78,7 +81,7 @@ namespace ArepouertoMovil.ViewModels
 
         private void LlenarVuelos()
         {
-           
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
