@@ -34,16 +34,16 @@
                     
                 </StackLayout>
             </StackLayout>
-            
-            <Button Command="{Binding EditarVueloCommand}" Text=""
+
+            <Button Command="{Binding VerEditarCommand}" Text="&#9999;"
                     Grid.Row="0" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,40"
                     BackgroundColor="#144272" CornerRadius="50" HeightRequest="80" WidthRequest="80"
                     ></Button>
             <Image Source="editar.png" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,32,50"
                    HeightRequest="50" WidthRequest="50"
                    ></Image>
-            
-            <Button Command="{Binding EliminarVueloCommand}" Text=""
+
+            <Button Command="{Binding EliminarCommand}" Text="Eliminar"
                     Grid.Row="0" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,-110,15"
                     BackgroundColor="#144272" CornerRadius="50" HeightRequest="70" WidthRequest="70"
                     ></Button>

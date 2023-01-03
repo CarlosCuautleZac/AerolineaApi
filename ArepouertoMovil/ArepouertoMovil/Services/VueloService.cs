@@ -22,7 +22,7 @@ namespace ArepouertoMovil.Services
         public async Task<List<Vuelo>> Get()
         {
             List<Vuelo> vuelos = new List<Vuelo>();
-            var response =  client.GetAsync("");
+            var response = client.GetAsync("");
             response.Wait();
             if (response.Result.IsSuccessStatusCode)
             {
@@ -61,27 +61,35 @@ namespace ArepouertoMovil.Services
             }
         }
 
-        public async Task<bool> Udate(Vuelo vuelo)
+
+        public async Task<bool> Update(Vuelo vuelo)
         {
 
             if (Validate(vuelo, out List<string> erroreslocales))
             {
                 var json = JsonConvert.SerializeObject(vuelo);
-                var response = await client.PutAsync("", new StringContent(json, Encoding.UTF8,
+                var response =  client.PutAsync("", new StringContent(json, Encoding.UTF8,
                     "application/json"));
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //BadRequest
+                response.Wait();
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.BadRequest) //BadRequest
                 {
-                    var errores = await response.Content.ReadAsStringAsync();
+                    var errores = await response.Result.Content.ReadAsStringAsync();
                     LanzarErrorJson(errores);
                     return false;
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                else if (response.Result.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     erroreslocales.Add("No se encontro el vuelo");
                     Error?.Invoke(erroreslocales);
                     return false;
                 }
-                return true;
+                else if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return true;
+                }
+
+                else
+                    return false;
             }
             else
             {
@@ -96,14 +104,19 @@ namespace ArepouertoMovil.Services
 
             if (vuelo != null)
             {
-                var response = await client.DeleteAsync("" + vuelo.Id);
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //BadRequest
+                var stringContent = new StringContent(JsonConvert.SerializeObject(vuelo), Encoding.UTF8,
+                                "application/json");
+                var request = new HttpRequestMessage(HttpMethod.Delete, "");
+                request.Content = stringContent;
+                var response = client.SendAsync(request);
+                response.Wait();
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.BadRequest) //BadRequest
                 {
-                    var errores = await response.Content.ReadAsStringAsync();
+                    var errores = await response.Result.Content.ReadAsStringAsync();
                     LanzarErrorJson(errores);
                     return false;
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                else if (response.Result.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     erroreslocales.Add("No se encontro el vuelo");
                     Error?.Invoke(erroreslocales);
@@ -114,7 +127,7 @@ namespace ArepouertoMovil.Services
             }
             else
                 return false;
-            
+
         }
 
         void LanzarErrorJson(string json)
@@ -140,8 +153,9 @@ namespace ArepouertoMovil.Services
             if (string.IsNullOrWhiteSpace(vuelo.Aerolinea))
                 errors.Add("Debe ingresar una aerolinea.");
 
-            if (vuelo.Fecha < DateTime.Now)
-                errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
+            if (vuelo.Id == 0)
+                if (vuelo.Fecha < DateTime.Now)
+                    errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
 
             return errors.Count == 0;
 

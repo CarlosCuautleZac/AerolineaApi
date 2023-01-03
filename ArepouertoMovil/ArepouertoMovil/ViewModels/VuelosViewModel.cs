@@ -20,10 +20,14 @@ namespace ArepouertoMovil.ViewModels
         public Command EnviarVueloCommand { get; set; }
         public Command VerDetallesVueloCommand { get; set; }
         public Command VerNuevoVueloCommand { get; set; }
+        public Command EliminarCommand { get; set; }
+        public Command VerEditarCommand { get; set; }
+        public Command EditarCommand { get; set; }
         #endregion
 
         #region Propiedades
         public Vuelo Vuelo { get; set; }
+        public Vuelo Clon { get; set; }
         public Observacion Observacion { get; set; }
         public List<Observacion> Observaciones { get; set; }
         public string Error { get; set; } = "";
@@ -37,6 +41,7 @@ namespace ArepouertoMovil.ViewModels
         ObservacionService observacionService;
         DetallesView detallesView;
         AgregarVueloView agregarView;
+        EditarView editarView;
         #endregion
 
         public VuelosViewModel()
@@ -45,13 +50,14 @@ namespace ArepouertoMovil.ViewModels
             EnviarVueloCommand = new Command(EnviarVuelo);
             VerDetallesVueloCommand = new Command<Vuelo>(VerDetalleVuelo);
             VerNuevoVueloCommand = new Command(VerNuevoVuelo);
+            EliminarCommand = new Command(Eliminar);
+            VerEditarCommand = new Command(VerEditar);
+            EditarCommand = new Command(Editar);
 
             //Services
-            vueloService = new VueloService();        
+            vueloService = new VueloService();
             vueloService.Error += VueloService_Error;
             observacionService = new ObservacionService();
-
-            
 
             //Listas
             Vuelo = new Vuelo() { Fecha = DateTime.Now.Date };
@@ -60,9 +66,61 @@ namespace ArepouertoMovil.ViewModels
             //Views
             detallesView = new DetallesView() { BindingContext = this };
             agregarView = new AgregarVueloView() { BindingContext = this };
+            editarView = new EditarView() { BindingContext = this };
 
+            //Metodos para el llenado de colecciones
             LlenarVuelos();
             LLenarObservaciones();
+        }
+
+        private async void Editar()
+        {
+            //Validar bien machin asi bien padre bien riko
+
+            if (Vuelo != null)
+            {
+                Clon.Fecha = Fecha.Date;
+                Clon.Fecha = Vuelo.Fecha.Add(Hora);
+                Clon.Observacion = Observacion.Observacion1;
+                var editado = await vueloService.Update(Clon);
+                if(editado)
+                {
+                    await Application.Current.MainPage.Navigation.PopToRootAsync();
+                    LlenarVuelos();
+                }
+            }
+        }
+
+        private async void VerEditar()
+        {
+            if(Vuelo!=null)
+            {
+                Clon = new Vuelo()
+                {
+                    Aerolinea = Vuelo.Aerolinea,
+                    Destino = Vuelo.Destino,
+                    Fecha = Vuelo.Fecha,
+                    Id=Vuelo.Id,
+                    Observacion=Vuelo.Observacion,
+                    Puerta = Vuelo.Puerta
+                };
+
+                Observacion = new Observacion();
+                Observacion.Observacion1 = Clon.Observacion;
+                Actualizar("");
+                await Application.Current.MainPage.Navigation.PushAsync(editarView);
+            }
+        }
+
+        private async void Eliminar()
+        {
+            if (Vuelo != null)
+            {
+                var eliminate = vueloService.Delete(Vuelo).Result;
+                LlenarVuelos();
+                await App.Current.MainPage.Navigation.PopAsync();
+                
+            }
         }
 
         private async void VerNuevoVuelo()
@@ -81,7 +139,7 @@ namespace ArepouertoMovil.ViewModels
                 Actualizar("");
                 await Application.Current.MainPage.Navigation.PushAsync(detallesView);
             }
-            catch(Exception m)
+            catch (Exception m)
             {
                 var error = m.Message;
             }
@@ -100,7 +158,7 @@ namespace ArepouertoMovil.ViewModels
 
         private async void EnviarVuelo()
         {
-            //Validar
+            //Validar bien machin asi bien padre bien riko
 
             Vuelo.Fecha = Fecha.Date;
             Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
