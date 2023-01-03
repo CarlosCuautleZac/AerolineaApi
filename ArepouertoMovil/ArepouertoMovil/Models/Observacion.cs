@@ -7,6 +7,6 @@ namespace ArepouertoMovil.Models
     public class Observacion
     {
         public int Id { get; set; }
-        public string Observacion1 { get; set; }
+        public string Observacion1 { get; set; } = "";
     }
 }

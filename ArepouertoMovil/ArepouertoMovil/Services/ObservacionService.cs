@@ -10,26 +10,37 @@ namespace ArepouertoMovil.Services
 {
     public class ObservacionService
     {
-        HttpClient client = new HttpClient()
+        HttpClient client;
+
+        public ObservacionService()
         {
-            BaseAddress = new Uri("https://aerolinea.sistemas19.com")
-        };
+            client = new HttpClient();
+            client.BaseAddress = new Uri("https://aerolinea.sistemas19.com/api/observacion");
+        }
 
         public async Task<List<Observacion>> Get()
         {
-            List<Observacion> observaciones = new List<Observacion>();
-            var response =  client.GetAsync("/api/observacion");
-            response.Wait();
-            if (response.Result.IsSuccessStatusCode)
+            try
             {
-                var json = await response.Result.Content.ReadAsStringAsync();
-                observaciones = JsonConvert.DeserializeObject<List<Observacion>>(json);
-            }
+                List<Observacion> observaciones = new List<Observacion>();
+                var response = client.GetAsync("");
+                response.Wait();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    var json = await response.Result.Content.ReadAsStringAsync();
+                    observaciones = JsonConvert.DeserializeObject<List<Observacion>>(json);
+                }
 
-            if (observaciones == null)
+                if (observaciones == null)
+                    return new List<Observacion>();
+                else
+                    return observaciones;
+            }
+            catch (Exception m)
+            {
+                var error = m.Message;
                 return new List<Observacion>();
-            else
-                return observaciones;
+            }
         } 
     }
 }

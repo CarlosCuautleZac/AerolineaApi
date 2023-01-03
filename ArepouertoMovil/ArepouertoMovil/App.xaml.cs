@@ -11,7 +11,7 @@ namespace ArepouertoMovil
         {
             InitializeComponent();
 
-            MainPage = new AgregarVueloView();
+            MainPage = new NavigationPage(new PaginaPrincipal());
         }
 
         protected override void OnStart()

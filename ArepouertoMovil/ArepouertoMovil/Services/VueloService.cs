@@ -22,10 +22,11 @@ namespace ArepouertoMovil.Services
         public async Task<List<Vuelo>> Get()
         {
             List<Vuelo> vuelos = new List<Vuelo>();
-            var response = await client.GetAsync("");
-            if (response.IsSuccessStatusCode)
+            var response =  client.GetAsync("");
+            response.Wait();
+            if (response.Result.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
+                var json = await response.Result.Content.ReadAsStringAsync();
                 vuelos = JsonConvert.DeserializeObject<List<Vuelo>>(json);
             }
 
