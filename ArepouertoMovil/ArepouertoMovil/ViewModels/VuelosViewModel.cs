@@ -35,6 +35,7 @@ namespace ArepouertoMovil.ViewModels
         public DateTime Fecha { get; set; } = DateTime.Now;
         public TimeSpan Hora { get; set; }
         public ObservableCollection<Vuelo> Vuelos { get; set; }
+        public DateTime MinDate { get; set; } = DateTime.Now.Date;
         #endregion
 
         #region Objetos
@@ -94,17 +95,24 @@ namespace ArepouertoMovil.ViewModels
         {
             //Validar bien machin asi bien padre bien riko
 
-            if (Vuelo != null)
+            try
             {
-                Clon.Fecha = Fecha.Date;
-                Clon.Fecha = Clon.Fecha.Add(Hora);
-                Clon.Observacion = Observacion.Observacion1;
-                var editado = await vueloService.Update(Clon);
-                if(editado)
+                if (Vuelo != null && Observacion != null)
                 {
-                    await Application.Current.MainPage.Navigation.PopToRootAsync();
-                    LlenarVuelos();
+                    Clon.Fecha = Fecha.Date;
+                    Clon.Fecha = Clon.Fecha.Add(Hora);
+                    Clon.Observacion = Observacion.Observacion1;
+                    var editado = await vueloService.Update(Clon);
+                    if (editado)
+                    {
+                        await Application.Current.MainPage.Navigation.PopToRootAsync();
+                        LlenarVuelos();
+                    }
                 }
+            }
+            catch(Exception m)
+            {
+                await App.Current.MainPage.DisplayAlert("Alert", m.Message, "OK");
             }
         }
 
@@ -133,18 +141,26 @@ namespace ArepouertoMovil.ViewModels
 
         private async void Eliminar()
         {
-            if (Vuelo != null)
+            try
             {
-                var eliminate = vueloService.Delete(Vuelo).Result;
-                LlenarVuelos();
-                await App.Current.MainPage.Navigation.PopAsync();
-                
+                if (Vuelo != null)
+                {
+                    var eliminate = vueloService.Delete(Vuelo).Result;
+                    LlenarVuelos();
+                    await App.Current.MainPage.Navigation.PopAsync();
+
+                }
+            }
+            catch(Exception m)
+            {
+                await App.Current.MainPage.DisplayAlert("Alert", m.Message, "OK");
             }
         }
 
         private async void VerNuevoVuelo()
         {
             Vuelo = new Vuelo();
+            Hora = DateTime.Now.TimeOfDay;
             Actualizar("");
             await Application.Current.MainPage.Navigation.PushAsync(agregarView);
         }
@@ -177,28 +193,28 @@ namespace ArepouertoMovil.ViewModels
 
         private async void EnviarVuelo()
         {
-            //Validar bien machin asi bien padre bien riko
-            if (Vuelo != null && Observacion!=null)
+            try
             {
-                Vuelo.Fecha = Fecha.Date;
-                Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
-                Vuelo.Fecha = Vuelo.Fecha.AddHours(2);
-                Vuelo.Observacion = Observacion.Observacion1;
-
-
-
-
-
-
-                var enviado = vueloService.Insert(Vuelo).Result;
-
-                if (enviado)
+                //Validar bien machin asi bien padre bien riko
+                if (Vuelo != null && Observacion != null)
                 {
+                    Vuelo.Fecha = Fecha.Date;
+                    Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
+                    Vuelo.Fecha = Vuelo.Fecha.AddHours(2);
+                    Vuelo.Observacion = Observacion.Observacion1;
+                    var enviado = vueloService.Insert(Vuelo).Result;
 
-
-                    LlenarVuelos();
-                    await App.Current.MainPage.Navigation.PopAsync();
+                    if (enviado)
+                    {
+                        LlenarVuelos();
+                        await App.Current.MainPage.Navigation.PopAsync();
+                    }
                 }
+                
+            }
+            catch(Exception m)
+            {
+                await App.Current.MainPage.DisplayAlert("Alert", m.Message, "OK");
             }
 
         }

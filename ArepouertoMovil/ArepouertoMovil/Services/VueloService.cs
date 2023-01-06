@@ -154,6 +154,9 @@ namespace ArepouertoMovil.Services
             if (string.IsNullOrWhiteSpace(vuelo.Aerolinea))
                 errors.Add("Debe ingresar una aerolinea.");
 
+            if (string.IsNullOrWhiteSpace(vuelo.Observacion))
+                errors.Add("Debe ingresar un estado");
+
             if (vuelo.Id == 0)
                 if (vuelo.Fecha < DateTime.Now)
                     errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");

@@ -12,7 +12,7 @@
             <Entry Text="{Binding Vuelo.Aerolinea}" Keyboard="Text"></Entry>
             
             <Label>Fecha:</Label>
-            <DatePicker Date="{Binding Fecha}"></DatePicker>
+            <DatePicker MinimumDate="{Binding MinDate}" Date="{Binding Fecha}"></DatePicker>
             
             <Label>Hora:</Label>
             <TimePicker Time="{Binding Hora}"></TimePicker>
