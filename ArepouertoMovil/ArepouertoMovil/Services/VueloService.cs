@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace ArepouertoMovil.Services
 {
@@ -157,6 +158,8 @@ namespace ArepouertoMovil.Services
                 if (vuelo.Fecha < DateTime.Now)
                     errors.Add("Fecha invalida. Debe escribir una fecha correcta para contiuar");
 
+            if (!(Connectivity.NetworkAccess == NetworkAccess.Internet))
+                errors.Add("No hay conexion a internet");
             return errors.Count == 0;
 
         }

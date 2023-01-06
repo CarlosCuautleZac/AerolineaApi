@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ArepouertoMovil.Views.PaginaPrincipal"
-             xmlns:vm="clr-namespace:ArepouertoMovil.ViewModels" Background="#144272">
+             xmlns:vm="clr-namespace:ArepouertoMovil.ViewModels" Background="#144272" NavigationPage.HasNavigationBar="False">
     <ContentPage.BindingContext>
         <vm:VuelosViewModel></vm:VuelosViewModel>
     </ContentPage.BindingContext>

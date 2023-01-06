@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace ArepouertoMovil.ViewModels
@@ -71,6 +72,22 @@ namespace ArepouertoMovil.ViewModels
             //Metodos para el llenado de colecciones
             LlenarVuelos();
             LLenarObservaciones();
+
+            Device.StartTimer(new TimeSpan(0, 0, 5), () =>
+            {
+                // do something every 5 seconds
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+                    {
+                        LlenarVuelos();
+
+                        if (Observacion == null)
+                            LLenarObservaciones();
+                    }
+                });
+                return true; 
+            });
         }
 
         private async void Editar()
@@ -159,33 +176,37 @@ namespace ArepouertoMovil.ViewModels
         private async void EnviarVuelo()
         {
             //Validar bien machin asi bien padre bien riko
-
-            Vuelo.Fecha = Fecha.Date;
-            Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
-            Vuelo.Observacion = Observacion.Observacion1;
-
-
-
-            var enviado = vueloService.Insert(Vuelo).Result;
-
-            if (enviado)
+            if (Vuelo != null && Observacion!=null)
             {
-                LlenarVuelos();
-                await App.Current.MainPage.Navigation.PopAsync();
-            }
+                Vuelo.Fecha = Fecha.Date;
+                Vuelo.Fecha = Vuelo.Fecha.Add(Hora);
+                Vuelo.Fecha = Vuelo.Fecha.AddHours(2);
+                Vuelo.Observacion = Observacion.Observacion1;
 
+
+
+                var enviado = vueloService.Insert(Vuelo).Result;
+
+                if (enviado)
+                {
+                    LlenarVuelos();
+                    await App.Current.MainPage.Navigation.PopAsync();
+                }
+            }
 
         }
 
         private void LLenarObservaciones()
         {
-            Observaciones = new List<Observacion>(observacionService.Get().Result);
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+                Observaciones = new List<Observacion>(observacionService.Get().Result);
             Actualizar("");
         }
 
         private void LlenarVuelos()
         {
-            Vuelos = new ObservableCollection<Vuelo>(vueloService.Get().Result);
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+                Vuelos = new ObservableCollection<Vuelo>(vueloService.Get().Result);
             Actualizar("");
         }
 
