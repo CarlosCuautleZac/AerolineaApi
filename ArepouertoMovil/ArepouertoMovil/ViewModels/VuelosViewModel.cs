@@ -185,10 +185,15 @@ namespace ArepouertoMovil.ViewModels
 
 
 
+
+
+
                 var enviado = vueloService.Insert(Vuelo).Result;
 
                 if (enviado)
                 {
+
+
                     LlenarVuelos();
                     await App.Current.MainPage.Navigation.PopAsync();
                 }
