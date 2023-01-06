@@ -21,7 +21,10 @@
                     <Label Text="{Binding Vuelo.Aerolinea}" ></Label>
 
                     <Label>Fecha:</Label>
-                    <Label FontSize="Body" Text="{Binding Fecha, StringFormat='{}{0:dd/MM/yyyy a\\t h:mm tt}'}"></Label>
+                    <Label FontSize="Body" Text="{Binding Fecha, StringFormat='{}{0:dd/MM/yyyy}'}"></Label>
+
+                    <Label>Hora:</Label>
+                    <Label FontSize="Body" Text="{Binding Hora}"></Label>
 
                     <Label>Puerta:</Label>
                     <Label  Text="{Binding Vuelo.Puerta}" ></Label>

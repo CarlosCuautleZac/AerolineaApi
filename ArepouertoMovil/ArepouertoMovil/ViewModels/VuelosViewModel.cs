@@ -97,7 +97,7 @@ namespace ArepouertoMovil.ViewModels
             if (Vuelo != null)
             {
                 Clon.Fecha = Fecha.Date;
-                Clon.Fecha = Vuelo.Fecha.Add(Hora);
+                Clon.Fecha = Clon.Fecha.Add(Hora);
                 Clon.Observacion = Observacion.Observacion1;
                 var editado = await vueloService.Update(Clon);
                 if(editado)
@@ -122,6 +122,8 @@ namespace ArepouertoMovil.ViewModels
                     Puerta = Vuelo.Puerta
                 };
 
+                Fecha = Clon.Fecha.Date;
+                Hora = Clon.Fecha.TimeOfDay;
                 Observacion = new Observacion();
                 Observacion.Observacion1 = Clon.Observacion;
                 Actualizar("");
