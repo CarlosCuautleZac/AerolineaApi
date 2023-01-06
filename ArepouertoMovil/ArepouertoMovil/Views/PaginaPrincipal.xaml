@@ -43,10 +43,10 @@
                     </ListView>
                 </StackLayout>
             </ScrollView>
-            <Button Grid.Row="0" Text="+" FontAttributes="Bold" BackgroundColor="#144272"
+            <Button Grid.Row="0" Text="&#9992;" FontAttributes="Bold" BackgroundColor="#144272"
              TextColor="White" HorizontalOptions="End" VerticalOptions="End" WidthRequest="80"
                     HeightRequest="80" Margin="0,0,20,22" BorderColor="#0A2647" BorderWidth="1"
-                    CornerRadius="50" FontSize="Medium" Command="{Binding VerNuevoVueloCommand}"
+                    CornerRadius="50" FontSize="40" Command="{Binding VerNuevoVueloCommand}"
                     
              ></Button>
         </Grid>

@@ -35,7 +35,7 @@
                 </StackLayout>
             </StackLayout>
 
-            <Button Command="{Binding VerEditarCommand}" Text="&#9999;"
+            <Button Command="{Binding VerEditarCommand}" Text="&#9999;" FontSize="35" TextColor="Yellow"
                     Grid.Row="0" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,40"
                     BackgroundColor="#144272" CornerRadius="50" HeightRequest="80" WidthRequest="80"
                     ></Button>
@@ -43,7 +43,7 @@
                    HeightRequest="50" WidthRequest="50"
                    ></Image>
 
-            <Button Command="{Binding EliminarCommand}" Text="Eliminar"
+            <Button Command="{Binding EliminarCommand}" Text="&#128465;" FontSize="30"
                     Grid.Row="0" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,-110,15"
                     BackgroundColor="#144272" CornerRadius="50" HeightRequest="70" WidthRequest="70"
                     ></Button>

@@ -118,24 +118,31 @@ namespace ArepouertoMovil.ViewModels
 
         private async void VerEditar()
         {
-            if(Vuelo!=null)
+            try
             {
-                Clon = new Vuelo()
+                if (Vuelo != null)
                 {
-                    Aerolinea = Vuelo.Aerolinea,
-                    Destino = Vuelo.Destino,
-                    Fecha = Vuelo.Fecha,
-                    Id=Vuelo.Id,
-                    Observacion=Vuelo.Observacion,
-                    Puerta = Vuelo.Puerta
-                };
+                    Clon = new Vuelo()
+                    {
+                        Aerolinea = Vuelo.Aerolinea,
+                        Destino = Vuelo.Destino,
+                        Fecha = Vuelo.Fecha,
+                        Id = Vuelo.Id,
+                        Observacion = Vuelo.Observacion,
+                        Puerta = Vuelo.Puerta
+                    };
 
-                Fecha = Clon.Fecha.Date;
-                Hora = Clon.Fecha.TimeOfDay;
-                Observacion = new Observacion();
-                Observacion.Observacion1 = Clon.Observacion;
-                Actualizar("");
-                await Application.Current.MainPage.Navigation.PushAsync(editarView);
+                    Fecha = Clon.Fecha.Date;
+                    Hora = Clon.Fecha.TimeOfDay;
+                    Observacion = new Observacion();
+                    Observacion.Observacion1 = Clon.Observacion;
+                    Actualizar("");
+                    await Application.Current.MainPage.Navigation.PushAsync(editarView);
+                }
+            }
+            catch(Exception)
+            {
+
             }
         }
 
@@ -159,10 +166,17 @@ namespace ArepouertoMovil.ViewModels
 
         private async void VerNuevoVuelo()
         {
-            Vuelo = new Vuelo();
-            Hora = DateTime.Now.TimeOfDay;
-            Actualizar("");
-            await Application.Current.MainPage.Navigation.PushAsync(agregarView);
+            try
+            {
+                Vuelo = new Vuelo();
+                Hora = DateTime.Now.TimeOfDay;
+                Actualizar("");
+                await Application.Current.MainPage.Navigation.PushAsync(agregarView);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private async void VerDetalleVuelo(Vuelo vuelo)
